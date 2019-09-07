@@ -1,0 +1,43 @@
+stages: [build, analysis, test]
+
+variables: &vars
+  ASTRO_EX: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  ASTRO_EX_CI: $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG
+  MIX_ENV: test
+  GIT_STRATEGY: none
+
+.builder: &builder
+  image: docker:latest
+  tags: [build]
+  before_script: []
+  variables:
+    <<: *vars
+    GIT_STRATEGY: clone
+
+aether/ci image:
+  <<: *builder
+  stage: build
+  script:
+    - docker build -t $ASTRO_EX_CI --build-arg MIX_ENV=test --target build-env .
+    - docker push $ASTRO_EX_CI
+
+before_script: [cd /astro_ex]
+
+.analysis: &analysis
+  stage: analysis
+  image: $ASTRO_EX_CI
+  tags: [test]
+
+format:
+  <<: *analysis
+  script: mix format --check-formatted
+
+credo:
+  <<: *analysis
+  script: mix credo
+
+test: &test
+  stage: test
+  image: $ASTRO_EX_CI
+  tags: [test]
+  script: mix coveralls
