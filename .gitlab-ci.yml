@@ -14,7 +14,7 @@ variables: &vars
     <<: *vars
     GIT_STRATEGY: clone
 
-aether/ci image:
+astro_ex/ci image:
   <<: *builder
   stage: build
   script:

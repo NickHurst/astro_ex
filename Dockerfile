@@ -14,7 +14,6 @@ RUN mix local.hex --force && \
   mix local.rebar --force
 
 COPY mix.* ${ROOT}/
-COPY config ${ROOT}/config
 
 CMD iex -S mix
 
