@@ -1,4 +1,4 @@
-FROM elixir:alpine as common
+FROM elixir:1.9-alpine as common
 
 ENV ROOT=/astro_ex USER=astro_ex GROUP=users
 
